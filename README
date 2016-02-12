@@ -1,0 +1,67 @@
+solarposition.js
+
+Calculates the position of solar at specified datetime, on specified location.
+Also calcuates sunrise/sunset time on specified date,
+on specified location, with specified elevation.
+
+See also
+  http://boiledorange73.github.io/solarposition.js/
+
+Sample HTML + SCRIPT
+---------------------------------------------------------------- CUT HERE
+<!DOCTYPE html>
+<html>
+<head>
+  <title>solarposition.js Sample</title>
+</head>
+<body>
+
+<h1>Position</h1>
+<pre id="POS"></pre>
+
+<h1>Sunrise/Sunset</h1>
+<pre id="SUNRISE"></pre>
+
+<script src="solarposition.js"></script>
+<script>
+
+  function testPosition() {
+    var s = "";
+    var date = new SolarPosition.Date();
+    for( var h = 0; h < 24; h++ ) {
+      date.hours = h;
+      date.minutes = 0;
+      date.seconds = 0;
+      date.milliseconds = 0;
+      var res = SolarPosition.calculatePosition(date, {"lat": 35, "lon": 135});
+      s = s + h + ": " + res.azimuth + " " + res.altitude + "\n";
+    }
+    var e = document.getElementById("POS");
+    e.innerHTML = s;
+  }
+
+  function testSunriseSunset() {
+    var date = new SolarPosition.Date(2015,10,24,0,0,0,0);
+    var dtsec = 60;
+    var elv = 3;
+    var pos = {"lon": 135, "lat": 35};
+    var res = SolarPosition.calculateStatusSeries(date, pos, elv, dtsec);
+    var s = res.first.type + "\n";
+    var event = res["event"];
+    for(var n = 0; n < event.length; n++ ) {
+      s = s + event[n].time + " " + event[n].boundary + " " + event[n].type + " "+
+        event[n].azimuth + " " + event[n].altitude + "\n";
+    }
+    var e = document.getElementById("SUNRISE");
+    e.innerHTML = s;
+  }
+
+  window.onload = function() {
+    testPosition();
+    testSunriseSunset();
+  };
+</script>
+
+</body>
+</html>
+---------------------------------------------------------------- CUT HERE
